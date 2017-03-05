@@ -6,10 +6,12 @@ using UnityEngine.SceneManagement;
 
 public class Manager : MonoBehaviour {
 
+    public int levelCount = 50;
     public Text coin = null;
     public Text distance = null;
     public new Camera camera = null;
     public GameObject guiGameOver = null;
+    public LevelGenerator levelGenerator = null;
 
     private int _currentCoins;
     private int _currentDistance;
@@ -22,7 +24,10 @@ public class Manager : MonoBehaviour {
         _currentDistance = 0;
         canPlay = false;
 
-        // TODO: Level generator start up
+        // Level generator start up
+        for(int i = 0; i < levelCount; i++) {
+            levelGenerator.RandomGenerator();
+        }
     }
 
     private void Update() {
@@ -40,7 +45,8 @@ public class Manager : MonoBehaviour {
         _currentDistance += 1;
         distance.text = _currentDistance.ToString();
 
-        // TODO: Generate new level piece here
+        // Generate new level piece here
+        levelGenerator.RandomGenerator();
     }
 
     public bool CanPlay() {
