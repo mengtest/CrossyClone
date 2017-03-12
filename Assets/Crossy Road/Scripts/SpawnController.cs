@@ -7,6 +7,7 @@ public class SpawnController : MonoBehaviour {
     // In which direction is the object going ?
     public bool goLeft = false;
     public bool goRight = false;
+    public bool both = false;
 
     // Containers of the spawnable gameObjects and positions
     public List<GameObject> items = new List<GameObject>();
@@ -22,7 +23,10 @@ public class SpawnController : MonoBehaviour {
         int direction = Random.Range(0, 2);
 
         // If direction equals at least 1, then go right
-        if(direction > 0) {
+        if(both) {
+            goLeft = true;
+            goRight = true;
+        }else if(direction > 0) {
             goLeft = false;
             goRight = true;
         } else {

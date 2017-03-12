@@ -4,18 +4,27 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 
-    public float moveDistance = 1;
-    public float moveTime = 0.4f;
-    public float colliderDistCheck = 1;
-
     // The player different states
     public enum State {
         Idle, Dead, Moving
     }
 
+    public float moveDistance = 1;
+    public float moveTime = 0.4f;
+    public float colliderDistCheck = 1;
     public State state;
     public ParticleSystem particle = null;
     public GameObject chick = null;
+
+    // Audio clips
+    public AudioClip audioIdle1 = null;
+    public AudioClip audioIdle2 = null;
+    public AudioClip audioHop = null;
+    public AudioClip audioHit = null;
+    public AudioClip audioSplash = null;
+
+    public ParticleSystem spalsh = null;
+    public bool parentedToObject = false;
 
     private Vector3 movement;
     private new Renderer renderer = null;
@@ -52,6 +61,8 @@ public class PlayerController : MonoBehaviour {
                 Rotate(new Vector3(0, -90, 0));
                 movement = new Vector3(transform.position.x - moveDistance, transform.position.y, transform.position.z);
             }
+
+            
             Move(movement);
         }
     }
@@ -80,6 +91,8 @@ public class PlayerController : MonoBehaviour {
         // Rotate the player in the right direction
         gameObject.transform.rotation = Quaternion.Euler(euler);
 
+        PlayAudioClip(audioIdle1);
+
         // Check if player can move
         CheckIfCanMove();
     }
@@ -87,14 +100,20 @@ public class PlayerController : MonoBehaviour {
     private void Move(Vector3 pos) {
         // Checks if the fplayer can move and then move the player
         if(state == State.Moving) {
+            // Play audio clip for the hop
+            PlayAudioClip(audioHop);
+
             // Use LeanTween to move the player and use the callback to MoveComplete
             LeanTween.move(this.gameObject, pos, moveTime).setOnComplete(MoveComplete);
         }
     }
 
     private void MoveComplete() {
-        // Set juping to false and idle to true
+        // Set jumping to false and idle to true
         state = State.Idle;
+
+        // Play audioclip after the move
+        PlayAudioClip(audioIdle2);
     }
 
     private void SetMoveForwardState() {
@@ -117,7 +136,29 @@ public class PlayerController : MonoBehaviour {
         ParticleSystem.EmissionModule em = particle.emission;
         em.enabled = true;
 
+        // Play audio when the player get hit
+        PlayAudioClip(audioHit);
+
         // Show the GameOver screen
         Manager.instance.GameOver();
+    }
+
+    public void GotSoaked() {
+        state = State.Dead;
+        ParticleSystem.EmissionModule em = spalsh.emission;
+        em.enabled = true;
+
+        // Play audio when the player get in the water
+        PlayAudioClip(audioSplash);
+
+        // Hide the player
+        chick.SetActive(false);
+
+        // Show the GameOver screen
+        Manager.instance.GameOver();
+    }
+
+    private void PlayAudioClip(AudioClip clip) {
+        GetComponent<AudioSource>().PlayOneShot(clip);
     }
 }

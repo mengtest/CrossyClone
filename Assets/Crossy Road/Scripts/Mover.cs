@@ -28,7 +28,6 @@ public class Mover : MonoBehaviour {
         }
 
         if(!renderer.isVisible && isVisible == true) {
-            Debug.Log("Remove object. No longer seen by camera");
             Destroy(this.gameObject);
         }
     }
@@ -37,6 +36,9 @@ public class Mover : MonoBehaviour {
         if(other.tag == "Player") {
             if(parentOnTrigger) {
                 other.transform.parent = this.transform;
+
+                // Player is parented to object
+                other.GetComponent<PlayerController>().parentedToObject = true;
             }
 
             if(hitBoxOntrigger) {
@@ -48,7 +50,10 @@ public class Mover : MonoBehaviour {
     private void OnTriggerExit(Collider other) {
         if(other.tag == "Player") {
             if(parentOnTrigger) {
-                other.transform.parent = null; ;
+                other.transform.parent = null;
+
+                // Player is not parented to object
+                other.GetComponent<PlayerController>().parentedToObject = false;
             }
         }
     }

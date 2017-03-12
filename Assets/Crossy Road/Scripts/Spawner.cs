@@ -82,7 +82,9 @@ public class Spawner : MonoBehaviour {
     private Vector3 GetSpawnPosition() {
         // If the object uses the placement, generate a random position between the spawnLeft and spawnRight position
         if(useSpawnPlacement) {
-            return new Vector3(Random.Range(spawnLeftPos, spawnRightPos), startPosition.position.y, startPosition.position.z);
+            int x = (int)Random.Range(spawnLeftPos, spawnRightPos);
+            Vector3 pos = new Vector3(x, startPosition.position.y, startPosition.position.z);
+            return pos;
         } else {
             // else return the start position of the object
             return startPosition.position;

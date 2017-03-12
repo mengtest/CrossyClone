@@ -11,8 +11,11 @@ public class CameraFollow : MonoBehaviour {
 
     private Vector3 _depth = Vector3.zero;
     private Vector3 _position = Vector3.zero;
-	
-	private void Update () {
+
+    private float MIN_X = -13.5f;
+    private float MAX_X = 18.5f;
+
+    private void Update () {
         // If we can't play, get out of here :D
         if(!Manager.instance.CanPlay()) return;
 
@@ -21,9 +24,9 @@ public class CameraFollow : MonoBehaviour {
 
         if(autoMove) {
             _depth = transform.position += new Vector3(0, 0, speed * Time.deltaTime);
-            transform.position = new Vector3(_position.x, offset.y, _depth.z);
+            transform.position = new Vector3(Mathf.Clamp(_position.x, MIN_X, MAX_X), offset.y, _depth.z);
         } else {
-            transform.position = new Vector3(_position.x, offset.y, _position.z);
+            transform.position = new Vector3(Mathf.Clamp(_position.x, MIN_X, MAX_X), offset.y, _position.z);
         }
 	}
 }
